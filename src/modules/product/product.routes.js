@@ -5,7 +5,7 @@ import {
   getDetailProduct,
   getProduct,
   updateProduct,
-} from "../controllers/productController.js";
+} from "./product.controller.js";
 
 const productRoutes = Router();
 

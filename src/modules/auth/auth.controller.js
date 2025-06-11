@@ -1,10 +1,10 @@
-import User from "../models/User.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-import createError from "../utils/error.js";
-import handleAsync from "../utils/handleAsync.js";
-import createResponse from "../utils/response.js";
+import User from "./auth.model.js";
+import createError from "../../common/utils/error.js";
+import handleAsync from "../../common/utils/handleAsync.js";
+import createResponse from "../../common/utils/response.js";
 
 export const Register = handleAsync(async (req, res, next) => {
   const { username, email, password } = req.body;

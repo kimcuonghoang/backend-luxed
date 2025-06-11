@@ -7,7 +7,7 @@ import {
   getDetailCategory,
   softDeleteCategory,
   updateCategory,
-} from "../controllers/categoryController.js";
+} from "./category.controller.js";
 
 const categoryRoutes = Router();
 

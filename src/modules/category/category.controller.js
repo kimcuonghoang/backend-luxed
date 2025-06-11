@@ -1,7 +1,8 @@
-import Category from "../models/Category.js";
-import createError from "../utils/error.js";
-import handleAsync from "../utils/handleAsync.js";
-import createResponse from "../utils/response.js";
+import Category from "./category.model.js";
+import createError from "../../common/utils/error.js";
+import handleAsync from "../../common/utils/handleAsync.js";
+import createResponse from "../../common/utils/response.js";
+import findByIdCategory from "./category.service.js";
 
 export const createCategory = handleAsync(async (req, res, next) => {
   const existing = await Category.findOne({ title: req.body.title });
@@ -19,14 +20,13 @@ export const getCategory = handleAsync(async (req, res, next) => {
   );
 });
 export const getDetailCategory = handleAsync(async (req, res, next) => {
-  const { id } = req.params;
-  if (id) {
-    const data = await Category.findById(id);
-    return res.json(
-      createResponse(true, 200, "Get category detail successfully!", data)
-    );
+  const data = await findByIdCategory(req.params.id);
+  if (!data) {
+    next(createError(404, "Category not found!"));
   }
-  next(createError(false, 404, "Not found category!"));
+  return res.json(
+    createResponse(true, 200, "Get category detail successfully!", data)
+  );
 });
 export const updateCategory = handleAsync(async (req, res, next) => {
   const { id } = req.params;
