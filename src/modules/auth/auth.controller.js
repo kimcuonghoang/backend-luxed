@@ -15,6 +15,7 @@ export const Register = handleAsync(async (req, res, next) => {
   await newUser.save();
   return res.json(createResponse(true, 201, "Register Successfully!", newUser));
 });
+
 export const Login = handleAsync(async (req, res, next) => {
   const { email, password } = req.body;
 
