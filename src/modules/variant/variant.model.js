@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 
-const productVariantSchema = new Schema(
+const variantSchema = new Schema(
   {
     product: { type: Schema.Types.ObjectId, ref: "Product", required: true },
     color: { type: Schema.Types.ObjectId, ref: "ProductColor", required: true },
@@ -15,4 +15,4 @@ const productVariantSchema = new Schema(
   { versionKey: false, timestamps: true }
 );
 
-export default mongoose.model("ProductVariant", productVariantSchema);
+export default mongoose.model("Variant", variantSchema);
