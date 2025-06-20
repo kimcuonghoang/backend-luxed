@@ -24,7 +24,10 @@ export const getDetailProduct = handleAsync(async (req, res, next) => {
   if (!id) {
     next(createError(false, 404, MESSAGES.PRODUCT.NOT_FOUND));
   }
-  const data = await Product.findById(id);
+  const data = await Product.findById(id)
+    .populate("brand", "title")
+    .populate("subCategory", "title")
+    .populate("category", "title");
   return res.json(
     createResponse(true, 200, MESSAGES.PRODUCT.GET_BY_ID_SUCCESS, data)
   );

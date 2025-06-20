@@ -2,30 +2,29 @@ import ProductSize from "./size.model.js";
 import createError from "../../common/utils/error.js";
 import handleAsync from "../../common/utils/handleAsync.js";
 import createResponse from "../../common/utils/response.js";
+import MESSAGES from "../../common/constants/message.js";
 
 export const createProductSize = handleAsync(async (req, res, next) => {
   // const existing = await ProductSize.findOne({ title: req.body.title });
   // if (existing) next(createError(400, "This ProductSize already exists"));
   const data = await ProductSize.create(req.body);
-  if (!data) next(createError(400, "Create ProductSize failed!"));
+  if (!data) next(createError(400, MESSAGES.SIZE.CREATE_ERROR));
   return res.json(
-    createResponse(true, 201, "Create ProductSize Successfully!", data)
+    createResponse(true, 201, MESSAGES.SIZE.CREATE_SUCCESS, data)
   );
 });
 export const getProductSize = handleAsync(async (req, res, next) => {
   const data = await ProductSize.find();
-  return res.json(
-    createResponse(true, 200, "Get list ProductSize successfully!", data)
-  );
+  return res.json(createResponse(true, 200, MESSAGES.SIZE.GET_SUCCESS, data));
 });
 export const getDetailProductSize = handleAsync(async (req, res, next) => {
   const { id } = req.params;
   if (!id) {
-    next(createError(false, 404, "Not found ProductSize!"));
+    next(createError(false, 404, MESSAGES.SIZE.NOT_FOUND));
   }
   const data = await ProductSize.findById(id);
   return res.json(
-    createResponse(true, 200, "Get ProductSize detail successfully!", data)
+    createResponse(true, 200, MESSAGES.SIZE.GET_BY_ID_SUCCESS, data)
   );
 });
 export const updateProductSize = handleAsync(async (req, res, next) => {
@@ -35,20 +34,18 @@ export const updateProductSize = handleAsync(async (req, res, next) => {
       new: true,
     });
     return res.json(
-      createResponse(true, 200, "Update ProductSize successfully!", data)
+      createResponse(true, 200, MESSAGES.SIZE.UPDATE_SUCCESS, data)
     );
   }
-  next(createError(false, 404, "ProductSize update failed!"));
+  next(createError(false, 404, MESSAGES.SIZE.UPDATE_ERROR));
 });
 export const deleteProductSize = handleAsync(async (req, res, next) => {
   const { id } = req.params;
   if (id) {
     await ProductSize.findByIdAndDelete(id);
-    return res.json(
-      createResponse(true, 200, "Delete ProductSize successfully!")
-    );
+    return res.json(createResponse(true, 200, MESSAGES.SIZE.DELETE_SUCCESS));
   }
-  next(createError(false, 404, "ProductSize delete failed!"));
+  next(createError(false, 404, MESSAGES.SIZE.DELETE_ERROR));
 });
 
 export const softDeleteProductSize = handleAsync(async (req, res, next) => {
@@ -58,10 +55,10 @@ export const softDeleteProductSize = handleAsync(async (req, res, next) => {
       deletedAt: new Date(),
     });
     return res.json(
-      createResponse(true, 200, "Hidden ProductSize successfully!")
+      createResponse(true, 200, MESSAGES.SIZE.SOFT_DELETE_SUCCESS)
     );
   }
-  next(createError(false, 404, "Hidden ProductSize failed"));
+  next(createError(false, 404, MESSAGES.SIZE.SOFT_DELETE_FAILED));
 });
 export const restoreProductSize = handleAsync(async (req, res, next) => {
   const { id } = req.params;
@@ -69,9 +66,7 @@ export const restoreProductSize = handleAsync(async (req, res, next) => {
     await ProductSize.findByIdAndUpdate(id, {
       deletedAt: null,
     });
-    return res.json(
-      createResponse(true, 200, "Restore ProductSize successfully!")
-    );
+    return res.json(createResponse(true, 200, MESSAGES.SIZE.RESTORE_SUCCESS));
   }
-  next(createError(false, 404, "Restore ProductSize failed"));
+  next(createError(false, 404, MESSAGES.SIZE.RESTORE_FAILED));
 });

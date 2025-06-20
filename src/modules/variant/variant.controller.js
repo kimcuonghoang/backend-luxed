@@ -6,13 +6,17 @@ import MESSAGES from "../../common/constants/message.js";
 
 export const createVariant = handleAsync(async (req, res, next) => {
   const data = await Variant.create(req.body);
+
   if (!data) next(createError(400, MESSAGES.VARIANT.CREATE_ERROR));
   return res.json(
     createResponse(true, 201, MESSAGES.VARIANT.CREATE_SUCCESS, data)
   );
 });
 export const getVariant = handleAsync(async (req, res, next) => {
-  const data = await Variant.find();
+  const data = await Variant.find()
+    .populate("product")
+    .populate("size")
+    .populate("color");
   return res.json(
     createResponse(true, 200, MESSAGES.VARIANT.GET_SUCCESS, data)
   );
@@ -52,7 +56,9 @@ export const softDeleteVariant = handleAsync(async (req, res, next) => {
     await Variant.findByIdAndUpdate(id, {
       deletedAt: new Date(),
     });
-    return res.json(createResponse(true, 200, MESSAGES.VARIANT.SOFT_DELETE_SUCCESS));
+    return res.json(
+      createResponse(true, 200, MESSAGES.VARIANT.SOFT_DELETE_SUCCESS)
+    );
   }
   next(createError(false, 404, MESSAGES.VARIANT.SOFT_DELETE_FAILED));
 });
@@ -62,7 +68,9 @@ export const restoreVariant = handleAsync(async (req, res, next) => {
     await Variant.findByIdAndUpdate(id, {
       deletedAt: null,
     });
-    return res.json(createResponse(true, 200, MESSAGES.VARIANT.RESTORE_SUCCESS));
+    return res.json(
+      createResponse(true, 200, MESSAGES.VARIANT.RESTORE_SUCCESS)
+    );
   }
-  next(createError(false, 404,MESSAGES.VARIANT.RESTORE_FAILED));
+  next(createError(false, 404, MESSAGES.VARIANT.RESTORE_FAILED));
 });

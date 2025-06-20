@@ -1,11 +1,11 @@
 import mongoose, { Schema } from "mongoose";
-import { USER_ROLES } from "../../common/constants/enums";
+import { USER_ROLES } from "../../common/constants/enums.js";
 
 const userModel = new Schema(
   {
     fullname: { type: String, required: true },
     email: { type: String, required: true },
-    address: { type: String, required: true },
+    address: { type: String },
     bio: { type: String },
     role: {
       type: String,
@@ -13,7 +13,21 @@ const userModel = new Schema(
       default: "member",
       required: true,
     },
-    phone_number: { type: String, required: true },
+    avatar: {
+      type: String,
+      default:
+        "https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg",
+    },
+    password: { type: String, required: true },
+    social: {
+      facebook: { type: String },
+      twitter: { type: String },
+      instagram: { type: String },
+      youtube: { type: String },
+      tiktok: { type: String },
+    },
+
+    phoneNumber: { type: String },
     isActive: { type: Boolean },
     latestLogin: { type: Date },
     isVerifyEmail: { type: Boolean },

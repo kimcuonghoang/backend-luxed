@@ -8,8 +8,14 @@ const productSchema = new Schema(
     description: { type: String },
     shortDescription: { type: String },
     image: { type: String, required: true },
-    thumbnail: { type: String, required: true },
+    price: { type: Number, required: true },
     brand: { type: Schema.Types.ObjectId, ref: "Brand", required: true },
+    category: {
+      type: Schema.Types.ObjectId,
+      ref: "Category",
+      required: true,
+    },
+
     subCategory: {
       type: Schema.Types.ObjectId,
       ref: "SubCategory",
