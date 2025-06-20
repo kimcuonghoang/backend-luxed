@@ -7,9 +7,12 @@ import handleAsync from "../../common/utils/handleAsync.js";
 import createResponse from "../../common/utils/response.js";
 import MESSAGES from "../../common/constants/message.js";
 import {
+  JWT_EXPIRES_FOR_MAIL,
   JWT_EXPIRES_IN,
   JWT_SECRET_KEY,
+  JWT_SECRET_KEY_FOR_MAIL,
 } from "../../common/configs/enviroments.js";
+import sendEmail from "./../../common/utils/mailSender.js";
 
 export const Register = handleAsync(async (req, res, next) => {
   const { email, password } = req.body;
@@ -22,6 +25,25 @@ export const Register = handleAsync(async (req, res, next) => {
     password: hashedPassword,
     role: "member",
   });
+  const verifyMailToken = jwt.sign(
+    { id: newUser._id },
+    JWT_SECRET_KEY_FOR_MAIL,
+    { expiresIn: JWT_EXPIRES_FOR_MAIL }
+  );
+  const verifyMailLink = `http://localhost:5173/auth/verify-mail/${verifyMailToken}`;
+  sendEmail(
+    newUser.email,
+    "Verify your email",
+    `
+      Xin chao ${newUser.fullname || "User"},);
+      Vui long click vào link dưới đây để xác thực email của bạn:
+      <a href="${verifyMailLink}">Xác thực email</a>
+      <br>
+      Nếu bạn không đăng ký tài khoản này, vui lòng bỏ qua email này.
+      <br>
+      Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi!
+  `
+  );
   return res.json(
     createResponse(true, 201, MESSAGES.AUTH.REGISTER_SUCCESS, newUser)
   );
