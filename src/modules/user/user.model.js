@@ -3,7 +3,7 @@ import { USER_ROLES } from "../../common/constants/enums.js";
 
 const userModel = new Schema(
   {
-    fullname: { type: String, required: true },
+    fullName: { type: String, required: true },
     email: { type: String, required: true },
     address: { type: String },
     bio: { type: String },

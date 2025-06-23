@@ -2,7 +2,7 @@ import nodemailer from "nodemailer";
 import createError from "./error.js";
 import { EMAIL_PASSWORD } from "../configs/enviroments.js";
 
-const sendEmail = async (email, subject, text) => {
+const sendEmail = async (email, subject, htmlContent) => {
   const transporter = nodemailer.createTransport({
     service: "gmail",
     secure: false,
@@ -19,7 +19,7 @@ const sendEmail = async (email, subject, text) => {
     from: "Thay Hoang",
     to: email,
     subject: subject,
-    text: text,
+    html: htmlContent,
   };
 
   try {

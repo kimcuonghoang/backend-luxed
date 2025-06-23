@@ -35,7 +35,7 @@ export const Register = handleAsync(async (req, res, next) => {
     newUser.email,
     "Verify your email",
     `
-      Xin chao ${newUser.fullname || "User"},);
+      Xin chao ${newUser.fullName || "User"},);
       Vui long click vào link dưới đây để xác thực email của bạn:
       <a href="${verifyMailLink}">Xác thực email</a>
       <br>
@@ -79,3 +79,11 @@ export const getUser = async (req, res, next) => {
     createResponse(true, 200, MESSAGES.AUTH.GET_USER_SUCCESS, users)
   );
 };
+
+export const authLogout = handleAsync(async (req, res, next) => {});
+
+export const authRefreshToken = handleAsync(async (req, res, next) => {});
+
+export const authForgotPassword = handleAsync(async (req, res, next) => {});
+
+export const authResetPassword = handleAsync(async (req, res, next) => {});
