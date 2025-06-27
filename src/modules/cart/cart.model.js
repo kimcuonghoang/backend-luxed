@@ -3,6 +3,7 @@ import mongoose, { Schema } from "mongoose";
 const cartModel = new Schema(
   {
     userId: { type: Schema.Types.ObjectId, ref: "User" },
+    ProductId: { type: Schema.Types.ObjectId, ref: "Product" },
     createdAt: { type: Date, default: null },
     updatedAt: { type: Date, default: null },
   },
