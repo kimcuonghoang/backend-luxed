@@ -8,7 +8,9 @@ const brandModel = new Schema(
     logoUrl: { type: String },
     description: { type: String },
     slug: { type: String },
-
+    seoTitle: { type: String },
+    seoDescription: { type: String },
+    isActive: { type: Boolean, default: true },
     deletedAt: { type: Date, default: null },
   },
   { versionKey: false, timestamps: true }

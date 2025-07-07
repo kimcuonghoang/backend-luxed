@@ -2,8 +2,14 @@ import mongoose, { Schema } from "mongoose";
 
 const cartModel = new Schema(
   {
-    userId: { type: Schema.Types.ObjectId, ref: "User" },
-    ProductId: { type: Schema.Types.ObjectId, ref: "Product" },
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      unique: true,
+    },
+    productId: { type: Schema.Types.ObjectId, ref: "Product", required: true },
+    total: { type: Number, required: true },
     createdAt: { type: Date, default: null },
     updatedAt: { type: Date, default: null },
   },
