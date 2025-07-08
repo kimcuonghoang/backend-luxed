@@ -5,7 +5,8 @@ const userModel = new Schema(
   {
     fullName: { type: String, required: true },
     email: { type: String, required: true },
-    address: { type: String },
+    password: { type: String, required: true },
+    address: { type: Schema.Types.ObjectId, ref: "Address" },
     bio: { type: String },
     role: {
       type: String,
@@ -18,7 +19,7 @@ const userModel = new Schema(
       default:
         "https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg",
     },
-    password: { type: String, required: true },
+
     social: {
       facebook: { type: String },
       twitter: { type: String },

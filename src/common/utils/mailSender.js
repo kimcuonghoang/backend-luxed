@@ -11,7 +11,7 @@ const sendEmail = async (email, subject, htmlContent) => {
       pass: EMAIL_PASSWORD,
     },
     tls: {
-      rejectUnauthorized: false, // ⚠️ Bỏ qua lỗi chứng chỉ
+      rejectUnauthorized: false,
     },
   });
 

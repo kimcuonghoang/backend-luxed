@@ -13,6 +13,7 @@ import {
   JWT_SECRET_KEY_FOR_MAIL,
 } from "../../common/configs/enviroments.js";
 import sendEmail from "./../../common/utils/mailSender.js";
+import { createCartForUser } from "../cart/cart.service.js";
 
 export const Register = handleAsync(async (req, res, next) => {
   const { email, password } = req.body;
@@ -44,6 +45,8 @@ export const Register = handleAsync(async (req, res, next) => {
       Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi!
   `
   );
+  await createCartForUser(newUser._id);
+  newUser.password = undefined;
   return res.json(
     createResponse(true, 201, MESSAGES.AUTH.REGISTER_SUCCESS, newUser)
   );
