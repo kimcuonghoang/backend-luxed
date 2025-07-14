@@ -23,4 +23,5 @@ export const {
   PAYOS_CLIENT_ID,
   PAYOS_API_KEY,
   PAYOS_CHECKSUM_KEY,
+  NROK_AUTH_tOKEN,
 } = process.env;

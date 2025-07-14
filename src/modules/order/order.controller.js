@@ -23,18 +23,10 @@ export const getListOrderOwner = handleAsync(async (req, res, next) => {
   });
   if (!listOrdersOwnerShip)
     return next(createError(true, 404, MESSAGES.ORDER.NOT_FOUND));
-  return res.json(
-    createResponse(
-      true,
-      200,
-      MESSAGES.ORDER.GET_BY_ID_SUCCESS,
-      listOrdersOwnerShip
-    )
-  );
+  return res.json(createResponse(true, 200, listOrdersOwnerShip));
 });
 export const createOrder = handleAsync(async (req, res, next) => {
   const data = await Order.create(req.body);
-  if (!data) next(createError(true, 404, MESSAGES.ORDER.CREATE_ERROR));
   return res.json(
     createResponse(true, 201, MESSAGES.ORDER.CREATE_SUCCESS, data)
   );
@@ -45,8 +37,13 @@ export const cancelOrder = handleAsync(async (req, res, next) => {});
 // createPayosPayment
 const payOS = new PayOS(PAYOS_CLIENT_ID, PAYOS_API_KEY, PAYOS_CHECKSUM_KEY);
 export const createPayosPayment = handleAsync(async (req, res, next) => {
-  const newOrder = await Order.create({ ...req.body, paymentMethod: "PAYOS" });
   const orderCode = Number(String(Date.now()).slice(-3));
+  const newOrder = await Order.create({
+    ...req.body,
+    orderCode,
+    paymentMethod: "PAYOS",
+  });
+
   const bodyPayos = {
     orderCode: orderCode,
     amount: newOrder.totalAmount,
@@ -72,24 +69,55 @@ export const createPayosPayment = handleAsync(async (req, res, next) => {
 });
 
 // returnConfirmPayment
-export const returnConfirmPayment = handleAsync(async (req, res, next) => {});
-
-export const confirmWebhookPayment = handleAsync(async (req, res, next) => {
-  const { orderCode, status, transactionId } = req.body;
-  if (!orderCode || !status || !transactionId) {
-    return next(
-      createError(true, 400, MESSAGES.ORDER.CONFIRM_WEBHOOK_PAYMENT_ERROR)
-    );
+export const returnConfirmPayment = handleAsync(async (req, res, next) => {
+  const query = req.query;
+  if (query.code === "00" && query.status === "PAID") {
+    const foundOrder = await Order.findOne({
+      orderCode: query.orderCode,
+      isPaid: false,
+    });
+    if (!foundOrder) {
+      return res.redirect(`http://localhost:3000/checkout/error`);
+    }
+    foundOrder.isPaid = true;
+    await foundOrder.save();
+    return res.redirect(`http://localhost:3000/checkout/success`);
+  } else {
+    return res.redirect("http://localhost:3000/checkout/error");
   }
-  const order = await Order.findOne({ orderCode });
-  if (!order) {
-    return next(createError(true, 404, MESSAGES.ORDER.NOT_FOUND));
-  }
-  order.paymentStatus = status;
-  order.paymentMethod = "PAYOS";
-  await order.save();
+});
 
-  return res.json(
-    createResponse(true, 200, MESSAGES.ORDER.CONFIRM_WEBHOOK_PAYMENT_SUCCESS)
-  );
+export const confirmWebhookPayment = async (url) => {
+  try {
+    await payOS.confirmWebhook(url);
+    console.log("Webhook payment confirmed successfully");
+  } catch (error) {
+    console.error("Error confirming webhook payment:", error);
+  }
+};
+
+export const handlePayOsWebhook = handleAsync(async (req, res, next) => {
+  const payOsOrderCode = 123;
+  const body = req.body;
+  if (body?.data.orderCode !== payOsOrderCode) {
+    const webhookData = payOS.verifyPaymentWebhookData(body);
+    console.log("Webhook Data:", webhookData);
+    if (webhookData.code === "00" && webhookData.desc === "success") {
+      const foundOrder = await Order.findOne({
+        orderCode: webhookData.orderCode,
+        isPaid: false,
+      });
+      if (!foundOrder) {
+        return next(createError(true, 404, MESSAGES.ORDER.NOT_FOUND));
+      }
+      foundOrder.isPaid = true;
+      await foundOrder.save();
+      return res.json(
+        createResponse(true, 200, MESSAGES.ORDER.PAYMENT_SUCCESS)
+      );
+    }
+  }
+  return res
+    .status(200)
+    .json(createResponse(false, 200, MESSAGES.ORDER.PAYMENT_WEBHOOK_ERROR));
 });

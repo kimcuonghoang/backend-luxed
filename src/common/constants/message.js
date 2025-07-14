@@ -187,6 +187,9 @@ const MESSAGES = {
     NOT_FOUND: "Không tìm thấy đơn hàng",
     INVALID_STATUS: "Trạng thái đơn hàng không hợp lệ",
     CONFIRM_WEBHOOK_PAYMENT_SUCCESS: "Xác nhận webhook thanh toán thành công",
+    CONFIRM_WEBHOOK_PAYMENT_ERROR: "Lỗi khi xác nhận webhook thanh toán",
+    PAYMENT_WEBHOOK_ERROR: "Lỗi khi xử lý webhook thanh toán",
+    PAYMENT_SUCCESS: "Thanh toán thành công",
   },
 
   EMAIL: {
