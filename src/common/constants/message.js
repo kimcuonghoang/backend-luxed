@@ -181,9 +181,12 @@ const MESSAGES = {
     CREATE_ERROR: "Lỗi khi tạo đơn hàng",
     UPDATE_ERROR: "Lỗi khi cập nhật đơn hàng",
     DELETE_ERROR: "Lỗi khi xóa đơn hàng",
+    CREATE_PAYMENT_LINK_SUCCESS: "Tạo liên kết thanh toán thành công",
+    CREATE_PAYMENT_LINK_ERROR: "Lỗi khi tạo liên kết thanh toán",
     CREATE_ERROR_EXISTS: "Đơn hàng đã tồn tại",
     NOT_FOUND: "Không tìm thấy đơn hàng",
     INVALID_STATUS: "Trạng thái đơn hàng không hợp lệ",
+    CONFIRM_WEBHOOK_PAYMENT_SUCCESS: "Xác nhận webhook thanh toán thành công",
   },
 
   EMAIL: {

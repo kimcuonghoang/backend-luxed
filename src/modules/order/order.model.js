@@ -11,8 +11,7 @@ const orderModel = new Schema(
     shippingFee: { type: Number },
     paymentStatus: { type: String },
     paymentMethod: { type: String },
-    voucher: { type: Schema.Types.ObjectId, ref: "Voucher" },
-
+    // voucher: { type: Schema.Types.ObjectId, ref: "Voucher" },
     createdAt: { type: Date, default: null },
     updatedAt: { type: Date, default: null },
   },
