@@ -13,10 +13,8 @@ export const createVariant = handleAsync(async (req, res, next) => {
   );
 });
 export const getVariant = handleAsync(async (req, res, next) => {
-  const data = await Variant.find()
-    .populate("product")
-    .populate("size")
-    .populate("color");
+  const data = await Variant.find().populate("product");
+
   return res.json(
     createResponse(true, 200, MESSAGES.VARIANT.GET_SUCCESS, data)
   );
@@ -73,4 +71,17 @@ export const restoreVariant = handleAsync(async (req, res, next) => {
     );
   }
   next(createError(false, 404, MESSAGES.VARIANT.RESTORE_FAILED));
+});
+
+export const getVariantsByProduct = handleAsync(async (req, res, next) => {
+  const { productId } = req.params;
+  if (!productId) {
+    return next(createError(true, 400, "Thiếu productId"));
+  }
+  const variants = await Variant.find({ product: productId })
+    .populate("attributeId")
+    .populate("valueId");
+  return res.json(
+    createResponse(true, 200, "Lấy biến thể theo sản phẩm thành công", variants)
+  );
 });

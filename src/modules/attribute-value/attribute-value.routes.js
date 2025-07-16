@@ -14,6 +14,7 @@ import { attributeValueSchema } from "./attribute-value.schema.js";
 const attributeValueRoutes = Router();
 
 attributeValueRoutes.get("/productId/:productId", getAttributeValue);
+attributeValueRoutes.get("/", getAttributeValue);
 attributeValueRoutes.get("/:id", getAttributeValueById);
 
 // * Role Admin

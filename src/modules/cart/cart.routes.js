@@ -4,7 +4,7 @@ import { verifyUser } from "../../common/middlewares/verifyUser.js";
 
 const cartRouter = Router();
 
-cartRouter.get("/", getCart);
+cartRouter.get("/:userId", getCart);
 cartRouter.put("/:id", updateCart);
 cartRouter.delete("/:id", deleteCart);
 

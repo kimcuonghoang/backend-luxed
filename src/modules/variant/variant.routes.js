@@ -5,6 +5,7 @@ import {
   getDetailVariant,
   getVariant,
   updateVariant,
+  getVariantsByProduct,
 } from "./variant.controller.js";
 import validBodyRequest from "../../common/middlewares/validBodyRequest.js";
 import variantSchema from "./variant.schema.js";
@@ -13,6 +14,7 @@ const variantRoutes = Router();
 
 variantRoutes.get("/", getVariant);
 variantRoutes.post("/", validBodyRequest(variantSchema), createVariant);
+variantRoutes.get("/product/:productId", getVariantsByProduct);
 variantRoutes.get("/:id", getDetailVariant);
 variantRoutes.patch("/:id", validBodyRequest(variantSchema), updateVariant);
 variantRoutes.delete("/:id", deleteVariant);

@@ -4,6 +4,7 @@ import createError from "../../common/utils/error.js";
 import handleAsync from "../../common/utils/handleAsync.js";
 import createResponse from "../../common/utils/response.js";
 import Order from "./order.model.js";
+import Cart from "../cart/cart.model.js";
 import {
   PAYOS_API_KEY,
   PAYOS_CHECKSUM_KEY,
@@ -36,7 +37,7 @@ export const cancelOrder = handleAsync(async (req, res, next) => {});
 
 // createPayosPayment
 const payOS = new PayOS(PAYOS_CLIENT_ID, PAYOS_API_KEY, PAYOS_CHECKSUM_KEY);
-export const createPayosPayment = handleAsync(async (req, res, next) => {
+export const createPayOsPayment = handleAsync(async (req, res, next) => {
   const orderCode = Number(String(Date.now()).slice(-3));
   const newOrder = await Order.create({
     ...req.body,
@@ -44,13 +45,18 @@ export const createPayosPayment = handleAsync(async (req, res, next) => {
     paymentMethod: "PAYOS",
   });
 
+  // Xóa giỏ hàng user sau khi tạo order thành công
+  if (req.body.userId) {
+    await Cart.deleteOne({ userId: req.body.userId });
+  }
+
   const bodyPayos = {
     orderCode: orderCode,
     amount: newOrder.totalAmount,
     currency: "VND",
     description: "Thanh toan don hang",
-    returnUrl: "https://example.com/return",
-    cancelUrl: "https://example.com/cancel",
+    returnUrl: "http://localhost:5173/checkout/success",
+    cancelUrl: "http://localhost:5173/checkout/error",
   };
   if (!bodyPayos.orderCode || !bodyPayos.amount || !bodyPayos.currency) {
     return next(

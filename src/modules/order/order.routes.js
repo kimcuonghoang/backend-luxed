@@ -1,7 +1,7 @@
 import { Router } from "express";
 import {
   createOrder,
-  createPayosPayment,
+  createPayOsPayment,
   getListOrderByAdmin,
   getListOrderOwner,
 } from "./order.controller.js";
@@ -11,6 +11,6 @@ const orderRoutes = Router();
 orderRoutes.get("/", getListOrderByAdmin);
 orderRoutes.get("/:userId", getListOrderOwner);
 orderRoutes.post("/", createOrder);
-orderRoutes.post("/createPayment", createPayosPayment);
+orderRoutes.post("/createPayment", createPayOsPayment);
 
 export default orderRoutes;
