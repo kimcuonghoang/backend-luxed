@@ -83,7 +83,10 @@ export const getUser = async (req, res, next) => {
   );
 };
 
-export const authLogout = handleAsync(async (req, res, next) => {});
+export const authLogout = handleAsync(async (req, res, next) => {
+  res.clearCookie("token");
+  return res.json(createResponse(true, 200, MESSAGES.AUTH.LOGOUT_SUCCESS));
+});
 
 export const authRefreshToken = handleAsync(async (req, res, next) => {});
 
