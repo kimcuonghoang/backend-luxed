@@ -3,6 +3,7 @@ import createError from "../../common/utils/error.js";
 import handleAsync from "../../common/utils/handleAsync.js";
 import createResponse from "../../common/utils/response.js";
 import MESSAGES from "../../common/constants/message.js";
+import Product from "../product/product.model.js";
 
 export const createSubCategory = handleAsync(async (req, res, next) => {
   const existing = await SubCategory.findOne({ title: req.body.title });
@@ -48,6 +49,11 @@ export const updateSubCategory = handleAsync(async (req, res, next) => {
   );
 });
 export const deleteSubCategory = handleAsync(async (req, res, next) => {
+  // Soft delete Product liên quan
+  await Product.updateMany(
+    { subCategory: req.params.id },
+    { deletedAt: new Date() }
+  );
   const data = await SubCategory.findByIdAndDelete(req.params.id);
   if (data)
     return res.json(

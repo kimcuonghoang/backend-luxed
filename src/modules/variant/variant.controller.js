@@ -5,8 +5,11 @@ import createResponse from "../../common/utils/response.js";
 import MESSAGES from "../../common/constants/message.js";
 
 export const createVariant = handleAsync(async (req, res, next) => {
+  const { product, attributeId, valueId } = req.body;
+  // Kiểm tra trùng lặp
+  const exists = await Variant.findOne({ product, attributeId, valueId });
+  if (exists) return next(createError(400, "Biến thể này đã tồn tại!"));
   const data = await Variant.create(req.body);
-
   if (!data) next(createError(400, MESSAGES.VARIANT.CREATE_ERROR));
   return res.json(
     createResponse(true, 201, MESSAGES.VARIANT.CREATE_SUCCESS, data)
@@ -14,7 +17,6 @@ export const createVariant = handleAsync(async (req, res, next) => {
 });
 export const getVariant = handleAsync(async (req, res, next) => {
   const data = await Variant.find().populate("product");
-
   return res.json(
     createResponse(true, 200, MESSAGES.VARIANT.GET_SUCCESS, data)
   );
@@ -32,6 +34,15 @@ export const getDetailVariant = handleAsync(async (req, res, next) => {
 export const updateVariant = handleAsync(async (req, res, next) => {
   const { id } = req.params;
   if (id) {
+    const { product, attributeId, valueId } = req.body;
+    // Kiểm tra trùng lặp (trừ chính nó)
+    const exists = await Variant.findOne({
+      _id: { $ne: id },
+      product,
+      attributeId,
+      valueId,
+    });
+    if (exists) return next(createError(400, "Biến thể này đã tồn tại!"));
     const data = await Variant.findByIdAndUpdate(id, req.body, { new: true });
     return res.json(
       createResponse(true, 200, MESSAGES.VARIANT.UPDATE_SUCCESS, data)

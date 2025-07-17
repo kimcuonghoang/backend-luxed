@@ -23,4 +23,9 @@ const variantSchema = new Schema(
   { versionKey: false, timestamps: true }
 );
 
+variantSchema.index(
+  { product: 1, attributeId: 1, valueId: 1 },
+  { unique: true }
+);
+
 export default mongoose.model("Variant", variantSchema);

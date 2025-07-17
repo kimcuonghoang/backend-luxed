@@ -3,6 +3,8 @@ import createError from "../../common/utils/error.js";
 import handleAsync from "../../common/utils/handleAsync.js";
 import createResponse from "../../common/utils/response.js";
 import MESSAGES from "../../common/constants/message.js";
+import Variant from "../variant/variant.model.js";
+import Product from "../product/product.model.js";
 
 export const createAttributeValue = handleAsync(async (req, res, next) => {
   const data = await AttributeValue.create(req.body);
@@ -12,7 +14,10 @@ export const createAttributeValue = handleAsync(async (req, res, next) => {
   );
 });
 export const getAttributeValue = handleAsync(async (req, res, next) => {
-  const data = await AttributeValue.find();
+  const { attributeId } = req.query;
+  let filter = {};
+  if (attributeId) filter.attributeId = attributeId;
+  const data = await AttributeValue.find(filter);
   return res.json(
     createResponse(true, 200, MESSAGES.ATTRIBUTE_VALUE.GET_SUCCESS, data)
   );
@@ -43,6 +48,18 @@ export const updateAttributeValue = handleAsync(async (req, res, next) => {
 export const deleteAttributeValue = handleAsync(async (req, res, next) => {
   const { id } = req.params;
   if (id) {
+    // Kiểm tra liên kết Variant
+    const variantCount = await Variant.countDocuments({ valueId: id });
+    if (variantCount > 0)
+      return next(createError(400, "Không thể xoá: Đang có biến thể sử dụng!"));
+    // Kiểm tra liên kết ProductVariant embedded
+    const productVariantCount = await Product.countDocuments({
+      "variants.attributes.valueId": id,
+    });
+    if (productVariantCount > 0)
+      return next(
+        createError(400, "Không thể xoá: Đang có biến thể sản phẩm sử dụng!")
+      );
     await AttributeValue.findByIdAndDelete(id);
     return res.json(
       createResponse(true, 200, MESSAGES.ATTRIBUTE_VALUE.DELETE_SUCCESS)

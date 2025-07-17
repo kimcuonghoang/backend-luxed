@@ -4,6 +4,8 @@ import handleAsync from "../../common/utils/handleAsync.js";
 import createResponse from "../../common/utils/response.js";
 import findByIdCategory from "./category.service.js";
 import MESSAGES from "../../common/constants/message.js";
+import SubCategory from "../subcategory/subcategory.model.js";
+import Product from "../product/product.model.js";
 
 export const createCategory = handleAsync(async (req, res, next) => {
   const existing = await Category.findOne({ title: req.body.title });
@@ -42,6 +44,13 @@ export const updateCategory = handleAsync(async (req, res, next) => {
 export const deleteCategory = handleAsync(async (req, res, next) => {
   const { id } = req.params;
   if (id) {
+    // Soft delete SubCategory liên quan
+    await SubCategory.updateMany(
+      { parentCategoryId: id },
+      { deletedAt: new Date() }
+    );
+    // Soft delete Product liên quan
+    await Product.updateMany({ category: id }, { deletedAt: new Date() });
     await Category.findByIdAndDelete(id);
     return res.json(
       createResponse(true, 200, MESSAGES.CATEGORY.DELETE_SUCCESS)
@@ -72,5 +81,5 @@ export const restoreCategory = handleAsync(async (req, res, next) => {
       createResponse(true, 200, MESSAGES.CATEGORY.RESTORE_SUCCESS)
     );
   }
-  next(createError(false, 404,MESSAGES.CATEGORY.RESTORE_FAILED));
+  next(createError(false, 404, MESSAGES.CATEGORY.RESTORE_FAILED));
 });
