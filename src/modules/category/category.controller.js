@@ -3,29 +3,32 @@ import createError from "../../common/utils/error.js";
 import handleAsync from "../../common/utils/handleAsync.js";
 import createResponse from "../../common/utils/response.js";
 import findByIdCategory from "./category.service.js";
+import MESSAGES from "../../common/constants/message.js";
+import SubCategory from "../subcategory/subcategory.model.js";
+import Product from "../product/product.model.js";
 
 export const createCategory = handleAsync(async (req, res, next) => {
   const existing = await Category.findOne({ title: req.body.title });
-  if (existing) next(createError(400, "This category already exists"));
+  if (existing) next(createError(400, MESSAGES.CATEGORY.CREATE_ERROR_EXISTS));
   const data = await Category.create(req.body);
-  if (!data) next(createError(400, "Create Category failed!"));
+  if (!data) next(createError(400, MESSAGES.CATEGORY.CREATE_ERROR));
   return res.json(
-    createResponse(true, 201, "Create Category Successfully!", data)
+    createResponse(true, 201, MESSAGES.CATEGORY.CREATE_SUCCESS, data)
   );
 });
 export const getCategory = handleAsync(async (req, res, next) => {
   const data = await Category.find();
   return res.json(
-    createResponse(true, 200, "Get list category successfully!", data)
+    createResponse(true, 200, MESSAGES.CATEGORY.GET_SUCCESS, data)
   );
 });
 export const getDetailCategory = handleAsync(async (req, res, next) => {
   const data = await findByIdCategory(req.params.id);
   if (!data) {
-    next(createError(404, "Category not found!"));
+    next(createError(404, MESSAGES.CATEGORY.CREATE_ERROR));
   }
   return res.json(
-    createResponse(true, 200, "Get category detail successfully!", data)
+    createResponse(true, 200, MESSAGES.CATEGORY.GET_BY_ID_SUCCESS, data)
   );
 });
 export const updateCategory = handleAsync(async (req, res, next) => {
@@ -33,18 +36,27 @@ export const updateCategory = handleAsync(async (req, res, next) => {
   if (id) {
     const data = await Category.findByIdAndUpdate(id, req.body);
     return res.json(
-      createResponse(true, 200, "Update category successfully!", data)
+      createResponse(true, 200, MESSAGES.CATEGORY.UPDATE_SUCCESS, data)
     );
   }
-  next(createError(false, 404, "Category update failed!"));
+  next(createError(false, 404, MESSAGES.CATEGORY.UPDATE_SUCCESS));
 });
 export const deleteCategory = handleAsync(async (req, res, next) => {
   const { id } = req.params;
   if (id) {
+    // Soft delete SubCategory liên quan
+    await SubCategory.updateMany(
+      { parentCategoryId: id },
+      { deletedAt: new Date() }
+    );
+    // Soft delete Product liên quan
+    await Product.updateMany({ category: id }, { deletedAt: new Date() });
     await Category.findByIdAndDelete(id);
-    return res.json(createResponse(true, 200, "Delete category successfully!"));
+    return res.json(
+      createResponse(true, 200, MESSAGES.CATEGORY.DELETE_SUCCESS)
+    );
   }
-  next(createError(false, 404, "Category delete failed!"));
+  next(createError(false, 404, MESSAGES.CATEGORY.DELETE_FAILED));
 });
 
 export const softDeleteCategory = handleAsync(async (req, res, next) => {
@@ -53,9 +65,11 @@ export const softDeleteCategory = handleAsync(async (req, res, next) => {
     await Category.findByIdAndUpdate(id, {
       deletedAt: new Date(),
     });
-    return res.json(createResponse(true, 200, "Hiden category successfully!"));
+    return res.json(
+      createResponse(true, 200, MESSAGES.CATEGORY.SOFT_DELETE_SUCCESS)
+    );
   }
-  next(createError(false, 404, "Hiden category failed"));
+  next(createError(false, 404, MESSAGES.CATEGORY.SOFT_DELETE_FAILED));
 });
 export const restoreCategory = handleAsync(async (req, res, next) => {
   const { id } = req.params;
@@ -64,8 +78,8 @@ export const restoreCategory = handleAsync(async (req, res, next) => {
       deletedAt: null,
     });
     return res.json(
-      createResponse(true, 200, "Restore category successfully!")
+      createResponse(true, 200, MESSAGES.CATEGORY.RESTORE_SUCCESS)
     );
   }
-  next(createError(false, 404, "Restore category failed"));
+  next(createError(false, 404, MESSAGES.CATEGORY.RESTORE_FAILED));
 });

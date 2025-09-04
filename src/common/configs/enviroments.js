@@ -11,4 +11,17 @@ dotenv.config({
   overrideProcessEnv: true,
 });
 
-export const { DB_URI, HOST, PORT } = process.env;
+export const {
+  DB_URI,
+  HOST,
+  PORT,
+  JWT_SECRET_KEY,
+  JWT_EXPIRES_IN,
+  JWT_SECRET_KEY_FOR_MAIL,
+  JWT_EXPIRES_FOR_MAIL,
+  EMAIL_PASSWORD,
+  PAYOS_CLIENT_ID,
+  PAYOS_API_KEY,
+  PAYOS_CHECKSUM_KEY,
+  NROK_AUTH_tOKEN,
+} = process.env;
