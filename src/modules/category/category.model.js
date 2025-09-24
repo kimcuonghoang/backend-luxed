@@ -5,7 +5,7 @@ const categorySchema = new Schema(
     title: { type: String, unique: true, required: true },
     description: { type: String },
     logoUrl: { type: String },
-    slug: { type: String, unique: true },
+    slug: { type: String },
     deletedAt: { type: Date, default: null },
   },
   { versionKey: false, timestamps: true }

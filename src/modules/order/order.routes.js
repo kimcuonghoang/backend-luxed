@@ -9,8 +9,10 @@ import {
 const orderRoutes = Router();
 
 orderRoutes.get("/", getListOrderByAdmin);
-orderRoutes.get("/:userId", getListOrderOwner);
-orderRoutes.post("/", createOrder);
+
 orderRoutes.post("/createPayment", createPayOsPayment);
 
+orderRoutes.post("/", createOrder);
+
+orderRoutes.get("/:userId", getListOrderOwner);
 export default orderRoutes;

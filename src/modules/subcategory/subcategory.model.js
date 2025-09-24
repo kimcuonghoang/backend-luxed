@@ -11,7 +11,7 @@ const subCategoryModel = new Schema(
     title: { type: String, required: true },
     logoUrl: { type: String },
     description: { type: String },
-    slug: { type: String, required: true },
+    slug: { type: String },
     deletedAt: { type: Date, default: null },
   },
   { versionKey: false, timestamps: true }

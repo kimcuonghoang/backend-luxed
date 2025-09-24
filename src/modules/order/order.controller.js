@@ -55,8 +55,8 @@ export const createPayOsPayment = handleAsync(async (req, res, next) => {
     amount: newOrder.totalAmount,
     currency: "VND",
     description: "Thanh toan don hang",
-    returnUrl: "http://localhost:5173/checkout/success",
-    cancelUrl: "http://localhost:5173/checkout/error",
+    returnUrl: "http://localhost:5173/",
+    cancelUrl: "http://localhost:5173/checkout",
   };
   if (!bodyPayos.orderCode || !bodyPayos.amount || !bodyPayos.currency) {
     return next(
@@ -83,13 +83,13 @@ export const returnConfirmPayment = handleAsync(async (req, res, next) => {
       isPaid: false,
     });
     if (!foundOrder) {
-      return res.redirect(`http://localhost:3000/checkout/error`);
+      return res.redirect(`http://localhost:3000/checkout`);
     }
     foundOrder.isPaid = true;
     await foundOrder.save();
-    return res.redirect(`http://localhost:3000/checkout/success`);
+    return res.redirect(`http://localhost:3000/checkout`);
   } else {
-    return res.redirect("http://localhost:3000/checkout/error");
+    return res.redirect("http://localhost:3000/checkout");
   }
 });
 
