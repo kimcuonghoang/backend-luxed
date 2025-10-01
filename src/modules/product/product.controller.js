@@ -25,8 +25,8 @@ export const getDetailProduct = handleAsync(async (req, res, next) => {
     next(createError(false, 404, MESSAGES.PRODUCT.NOT_FOUND));
   }
   const data = await Product.findById(id)
-    .populate("subCategory", "title")
-    .populate("category", "title")
+    // .populate("subCategory", "title")
+    // .populate("category", "title")
     .populate({
       path: "variants.attributes.attributeId",
       model: "Attribute",

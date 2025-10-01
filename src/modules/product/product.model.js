@@ -8,12 +8,11 @@ const productSchema = new Schema(
     description: { type: String },
     shortDescription: { type: String },
     image: { type: String, required: true },
-    price: { type: Number, required: true },
-
-    // category: {
-    //   type: Schema.Types.ObjectId,
-    //   ref: "Category",
-    // },
+    category: {
+      type: Schema.Types.ObjectId,
+      ref: "Category",
+    },
+    variants: [{ type: mongoose.Schema.Types.ObjectId, ref: "Variant" }],
     // subCategory: {
     //   type: Schema.Types.ObjectId,
     //   ref: "SubCategory",

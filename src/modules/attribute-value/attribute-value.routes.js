@@ -7,13 +7,14 @@ import {
   updateAttributeValue,
   softDeleteAttributeValue,
   restoreAttributeValue,
+  getAttributeValueByAttributeId,
 } from "./attribute-value.controller.js";
 import validBodyRequest from "../../common/middlewares/validBodyRequest.js";
 import { attributeValueSchema } from "./attribute-value.schema.js";
 
 const attributeValueRoutes = Router();
 
-attributeValueRoutes.get("/productId/:productId", getAttributeValue);
+attributeValueRoutes.get("/:attributeId", getAttributeValueByAttributeId);
 attributeValueRoutes.get("/", getAttributeValue);
 attributeValueRoutes.get("/:id", getAttributeValueById);
 
@@ -24,7 +25,7 @@ attributeValueRoutes.patch("/soft-delete/:id", softDeleteAttributeValue);
 attributeValueRoutes.patch("/restore/:id", restoreAttributeValue);
 
 attributeValueRoutes.use(validBodyRequest(attributeValueSchema));
-attributeValueRoutes.post("/", createAttributeValue);
+attributeValueRoutes.post("/:attributeId", createAttributeValue);
 attributeValueRoutes.patch("/:id", updateAttributeValue);
 
 export default attributeValueRoutes;
