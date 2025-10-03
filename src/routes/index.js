@@ -17,7 +17,6 @@ router.use("/products", productRoutes);
 router.use("/categories", categoryRoutes);
 router.use("/sub-categories", subCategoryRoutes);
 router.use("/auth", authRoutes);
-
 router.use("/variants", variantRoutes);
 router.use("/attribute", attributeRoutes);
 router.use("/attribute-value", attributeValueRoutes);

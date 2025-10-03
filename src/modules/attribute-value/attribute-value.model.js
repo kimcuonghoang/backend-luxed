@@ -7,7 +7,6 @@ const attributeValueModel = mongoose.Schema(
     attributeId: {
       type: Schema.Types.ObjectId,
       ref: "Attribute",
-      required: true,
     },
     isActive: { type: Boolean },
     deletedAt: { type: Date, default: null },
@@ -17,5 +16,6 @@ const attributeValueModel = mongoose.Schema(
     timestamps: true,
   }
 );
+attributeValueModel.index({ attributeId: 1, valueCode: 1 }, { unique: true });
 
 export default mongoose.model("AttributeValue", attributeValueModel);

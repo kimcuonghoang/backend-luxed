@@ -6,18 +6,54 @@ import MESSAGES from "../../common/constants/message.js";
 import Variant from "../variant/variant.model.js";
 import Product from "../product/product.model.js";
 
+export const getAttributeValueByAttributeId = handleAsync(async (req, res) => {
+  const { attributeId } = req.params;
+  if (!attributeId) {
+    throw createError(400, MESSAGES.ATTRIBUTE_VALUE.ATTRIBUTE_ID_REQUIRED);
+  }
+  const data = await AttributeValue.find({
+    attributeId,
+    deletedAt: null,
+  }).populate({
+    path: "attributeId",
+    select: "attributeName",
+  });
+  return res.json(
+    createResponse(true, 200, MESSAGES.ATTRIBUTE_VALUE.GET_SUCCESS, data)
+  );
+});
+
 export const createAttributeValue = handleAsync(async (req, res, next) => {
-  const data = await AttributeValue.create(req.body);
-  if (!data) next(createError(400, MESSAGES.ATTRIBUTE_VALUE.CREATE_ERROR));
+  const { attributeId } = req.params; // lấy attributeId từ URL
+
+  if (!attributeId) {
+    throw createError(400, MESSAGES.ATTRIBUTE_VALUE.ATTRIBUTE_ID_REQUIRED);
+  }
+
+  // merge attributeId vào body
+  const data = await AttributeValue.create({
+    ...req.body,
+    attributeId,
+  });
+
+  if (!data) {
+    return next(createError(400, MESSAGES.ATTRIBUTE_VALUE.CREATE_ERROR));
+  }
+
   return res.json(
     createResponse(true, 201, MESSAGES.ATTRIBUTE_VALUE.CREATE_SUCCESS, data)
   );
 });
+
 export const getAttributeValue = handleAsync(async (req, res, next) => {
   const { attributeId } = req.query;
   let filter = {};
   if (attributeId) filter.attributeId = attributeId;
-  const data = await AttributeValue.find(filter);
+  const data = await AttributeValue.find(filter).populate({
+    path: "attributeId",
+    select: "attributeName",
+  });
+
   return res.json(
     createResponse(true, 200, MESSAGES.ATTRIBUTE_VALUE.GET_SUCCESS, data)
   );
